@@ -1,0 +1,16 @@
+*.log
+node_modules/
+.env*
+!.env.example
+
+.cache/
+public
+
+.DS_Store
+
+yarn-error.log
+.yarn-integrity
+
+.vscode
+.idea/
+.package-lock.json
