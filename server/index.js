@@ -9,6 +9,15 @@ app.use(cors());
 
 const PORT = 3000;
 
+const formatMessage = (username, text) => {
+  return {
+    username,
+    text,
+  };
+};
+
+const chatName = "Chat Bot: ";
+
 server.listen(PORT, () => console.log("Server running"));
 const io = new socketio.Server(server, {
   cors: {
@@ -18,20 +27,23 @@ const io = new socketio.Server(server, {
 
 io.on("connection", (socket) => {
   // console.log("Client connected");
-  socket.emit("message", "Welcome");
+  socket.emit("message", formatMessage(chatName, "Welcome"));
 
   // //When user connects, does not show for THE user that is connecting
-  socket.broadcast.emit("message", "A user has joined the chat!");
+  socket.broadcast.emit(
+    "message",
+    formatMessage(chatName, "A user has joined the chat!")
+  );
 
   // //When user disconnects
   socket.on("disconnect", () => {
     console.log("disconected");
-    io.emit("message", "A user has left the chat");
+    io.emit("message", formatMessage(chatName, "A user has left the chat"));
   });
 
   //Listen for chatMessage
   socket.on("chatMessage", (message) => {
     console.log(message);
-    socket.broadcast.emit("message", message);
+    socket.broadcast.emit("message", formatMessage("User: ", message));
   });
 });
