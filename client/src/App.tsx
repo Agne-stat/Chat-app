@@ -5,7 +5,6 @@ const App = () => {
   const [userMessage, setUserMessage] = useState([{}]);
   const [socket, setSocket] = useState<Socket | null>(null);
 
-
   useEffect(() => {
     const newSocket = io("ws://localhost:3000");
     setSocket(newSocket);
@@ -39,13 +38,12 @@ const App = () => {
       <h1 className="text-xl">Chat app</h1>
 
       <ul>
-        {userMessage.map((message, index) =>  (
-            <li key={index}>
-              {message.username}
-              {message.text}
-            </li>
-          );
-        )}
+        {userMessage.map((message, index) => (
+          <li key={index}>
+            {message.username}
+            {message.text}
+          </li>
+        ))}
       </ul>
       <form onSubmit={handleForm}>
         <input
