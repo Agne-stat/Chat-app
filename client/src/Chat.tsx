@@ -1,17 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { AuthContext } from "./App";
 
 const Chat = () => {
+  const { user } = useContext(AuthContext);
   const [userMessage, setUserMessage] = useState([{}]);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const userName = localStorage.getItem("chat-user");
-  const chatRoom = localStorage.getItem("chat-room");
+  const userName = user?.email;
+
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const chatRoom = urlParams.get("room");
 
   useEffect(() => {
     const newSocket = io("ws://localhost:3000");
     setSocket(newSocket);
-
-    console.log(userName, chatRoom);
 
     newSocket.emit("joinRoom", { userName, chatRoom });
     newSocket.on("roomUsers", ({ room, users }) => {
@@ -27,9 +30,6 @@ const Chat = () => {
     };
   }, []);
 
-  //   const userName = localStorage.getItem("chat-user");
-  //   const chatRoom = localStorage.getItem("chat-room");
-
   const handleForm = (e: any) => {
     e.preventDefault();
 
@@ -44,6 +44,10 @@ const Chat = () => {
       },
     ]);
   };
+
+  //   const leaveRoom = () => {
+
+  //   }
 
   return (
     <div>
@@ -66,6 +70,9 @@ const Chat = () => {
         <button type="submit" className="bg-blue-500">
           Send
         </button>
+        <div>
+          <a href="/">Leave Room</a>
+        </div>
       </form>
     </div>
   );

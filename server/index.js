@@ -61,6 +61,7 @@ io.on("connection", (socket) => {
     const user = userJoin(socket.id, userName, chatRoom);
 
     socket.join(user.chatRoom);
+    console.log(user);
 
     socket.emit("message", formatMessage(chatName, "Welcome"));
 
