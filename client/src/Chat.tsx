@@ -5,6 +5,7 @@ import { AuthContext } from "./App";
 const Chat = () => {
   const { user } = useContext(AuthContext);
   const [userMessage, setUserMessage] = useState([{}]);
+  const [room, setRoom] = useState("");
   const [socket, setSocket] = useState<Socket | null>(null);
   const userName = user?.email;
 
@@ -23,6 +24,12 @@ const Chat = () => {
     newSocket.on("message", (message: string) => {
       setUserMessage((userMessage) => [...userMessage, message]);
     });
+
+    if (chatRoom?.startsWith("Room")) {
+      return setRoom(chatRoom);
+    } else {
+      setRoom("Instant Room");
+    }
 
     return () => {
       newSocket.off("message");
@@ -51,7 +58,7 @@ const Chat = () => {
 
   return (
     <div>
-      <h1 className="text-xl">{chatRoom}</h1>
+      <h1 className="text-xl">{room}</h1>
       <ul>
         {userMessage.map((message, index) => (
           <li key={index}>
