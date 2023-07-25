@@ -39,7 +39,6 @@ const Chat = () => {
 
   const handleForm = (e: any) => {
     e.preventDefault();
-
     //Emit message to serve
     if (socket) socket.emit("chatMessage", e.target.message.value);
 
@@ -52,35 +51,39 @@ const Chat = () => {
     ]);
   };
 
-  //   const leaveRoom = () => {
-
-  //   }
-
   return (
-    <div>
-      <h1 className="text-xl">{room}</h1>
-      <ul>
-        {userMessage.map((message, index) => (
-          <li key={index}>
-            {message.username}
-            {message.text}
-          </li>
-        ))}
-      </ul>
-      <form onSubmit={handleForm}>
-        <input
-          type="text"
-          placeholder="Enter Message"
-          required
-          name="message"
-        />
-        <button type="submit" className="bg-blue-500">
-          Send
-        </button>
-        <div>
-          <a href="/">Leave Room</a>
-        </div>
-      </form>
+    <div className="h-full flex flex-col place-content-between">
+      <div className="m-12">
+        <h1 className="text-xl mb-5">{room}</h1>
+        <ul>
+          {userMessage.map((message, index) => (
+            <li key={index} className="flex flex-col">
+              <p className="mr-5">{message.username}</p>
+              {!!message.text && (
+                <div className="bg-gray-300 bg-opacity-25 h-auto p-2 max-w-md w-auto">
+                  {message.text}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+        <form onSubmit={handleForm} className="flex ">
+          <input
+            type="text"
+            placeholder="Enter Message"
+            required
+            name="message"
+          />
+          <button type="submit" className="h-10 bg-teal-600 p-2 w-14 mt-5">
+            Send
+          </button>
+        </form>
+      </div>
+      <div className="m-12">
+        <a className="h-10 bg-teal-600 p-2 w-14" href="/">
+          Leave Room
+        </a>
+      </div>
     </div>
   );
 };

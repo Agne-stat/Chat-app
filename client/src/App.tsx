@@ -65,14 +65,12 @@ const App = () => {
         auth,
       }}
     >
-      <div>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Profile />} />
-            <Route path="/chat" element={<Chat />} />
-          </Routes>
-        </Router>
-      </div>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Profile />} />
+          <Route path="/chat" element={<Chat />} />
+        </Routes>
+      </Router>
     </AuthContext.Provider>
   );
 };
