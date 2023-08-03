@@ -49,9 +49,9 @@ const Profile = () => {
                     onChange={(e) => setChatRoom(e.target.value)}
                   >
                     <option>Select room</option>
-                    <option value="Room_01">Room 01</option>
-                    <option value="Room_02">Room 02</option>
-                    <option value="Room_03">Room 03</option>
+                    <option value="room_01">Room 01</option>
+                    <option value="room_02">Room 02</option>
+                    <option value="room_03">Room 03</option>
                   </select>
                 </div>
                 <button className="h-10  bg-teal-600 p-2 ">Join Room</button>

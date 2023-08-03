@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { AuthContext } from "./App";
@@ -18,9 +19,9 @@ const Chat = () => {
     setSocket(newSocket);
 
     newSocket.emit("joinRoom", { userName, chatRoom });
-    newSocket.on("roomUsers", ({ room, users }) => {
-      console.log(room, users);
-    });
+    // newSocket.on("roomUsers", ({ room, users }) => {
+    //   console.log(room, users);
+    // });
     newSocket.on("message", (message: string) => {
       setUserMessage((userMessage) => [...userMessage, message]);
     });
@@ -36,6 +37,23 @@ const Chat = () => {
       newSocket.close();
     };
   }, []);
+
+  useEffect(() => {
+    axios.get(`http://localhost:3000/rooms/${chatRoom}`).then((res) => {
+      console.log("Room DATA: ", res.data.messages);
+      const messagesArray = res.data.messages;
+      messagesArray.map((item: any) => {
+        setUserMessage((userMessage) => [
+          ...userMessage,
+          {
+            username:
+              userName === `${item.username}` ? "Me: " : `${item.username}`,
+            text: `${item.message}` || "",
+          },
+        ]);
+      });
+    });
+  }, [chatRoom]);
 
   const handleForm = (e: any) => {
     e.preventDefault();

@@ -2,13 +2,99 @@ const express = require("express");
 const http = require("http");
 const socketio = require("socket.io");
 const cors = require("cors");
+const admin = require("firebase-admin");
+const key = require("./key.json");
+const FieldValue = require("firebase-admin").firestore.FieldValue;
 
 const app = express();
 const server = http.createServer(app);
+const PORT = 3000;
+server.listen(PORT, () => console.log("Server running"));
 app.use(cors());
 
-const PORT = 3000;
+const router = express.Router();
+app.use("/", router);
 
+// Use the JSON middleware to parse incoming JSON data
+app.use(express.json());
+
+// Define the route to store chat messages
+router.post("/sendMessage", (req, res) => {
+  const username = req.body.username;
+  const message = req.body.message;
+
+  if (!username || !message) {
+    return res.status(400).json({ error: "Incomplete message data" });
+  }
+
+  const messagesRef = db.collection("rooms").doc(id);
+
+  // Add the message to the Firestore collection
+  messagesRef
+    .add({
+      username,
+      message,
+    })
+    .then((docRef) => {
+      // console.log("Message successfully written with ID: ", docRef.id);
+      res.status(201).json({ message: "Message sent successfully" });
+    })
+    .catch((error) => {
+      console.error("Error writing message: ", error);
+      res.status(500).json({ error: "Something went wrong" });
+    });
+});
+
+///****** FIRESTORE ******///
+// seting up firestore
+admin.initializeApp({
+  credential: admin.credential.cert(key),
+});
+const db = admin.firestore();
+
+// set data to collection
+const collection = db.collection("rooms");
+const roomDocRef = collection.doc("room");
+
+roomDocRef
+  .set({
+    message: "First message",
+    user: "User1",
+  })
+  .then(() => {
+    console.log("Document succesfully written!");
+  })
+  .catch((error) => {
+    console.log("Error writting document: ", error);
+  });
+
+// get all collections data
+const collectionRef = db.collection("rooms");
+
+collectionRef
+  .get()
+  .then((collections) => {
+    collections.forEach((collection) => {
+      // console.log(collection.id, "=>", collection.data());
+    });
+  })
+  .catch((error) => {
+    console.log("Error writting document: ", error);
+  });
+
+// get one collection data
+const documentRef = collection.doc("room");
+
+documentRef
+  .get()
+  .then((document) => {
+    // console.log("room data: ", document.data());
+  })
+  .catch((error) => {
+    console.log("Error writting document: ", error);
+  });
+
+///****** SOCKETS ******///
 const formatMessage = (username, text) => {
   return {
     username,
@@ -24,7 +110,6 @@ const users = [];
 const userJoin = (id, userName, chatRoom) => {
   const user = { id, userName, chatRoom };
 
-  console.log(users);
   users.push(user);
   return user;
 };
@@ -48,7 +133,6 @@ const getRoomUsers = (chatRoom) => {
   return users.filter((user) => user.chatRoom === chatRoom);
 };
 
-server.listen(PORT, () => console.log("Server running"));
 const io = new socketio.Server(server, {
   cors: {
     origin: "http://localhost:5173",
@@ -61,7 +145,6 @@ io.on("connection", (socket) => {
     const user = userJoin(socket.id, userName, chatRoom);
 
     socket.join(user.chatRoom);
-    console.log(user);
 
     socket.emit("message", formatMessage(chatName, "Welcome"));
 
@@ -86,6 +169,25 @@ io.on("connection", (socket) => {
     socket.broadcast
       .to(user.chatRoom)
       .emit("message", formatMessage(`${user.userName}: `, message));
+
+    const roomRef = db.collection("rooms").doc(user.chatRoom);
+
+    roomRef
+      .set(
+        {
+          messages: FieldValue.arrayUnion({
+            username: user.userName,
+            message: message,
+          }),
+        },
+        { merge: true }
+      )
+      .then(() => {
+        console.log("Document succesfully written!");
+      })
+      .catch((error) => {
+        console.log("Error writting document: ", error);
+      });
   });
 
   //When user disconnects
@@ -105,4 +207,46 @@ io.on("connection", (socket) => {
       });
     }
   });
+});
+
+// ///****** ENDPOINTS ******///
+
+router.get("/rooms", async (req, res) => {
+  const collectionRef = db.collection("rooms");
+
+  await collectionRef
+    .get()
+    .then((querySnapshot) => {
+      const rooms = [];
+      querySnapshot.forEach((doc) => {
+        rooms.push(doc.data());
+      });
+      res.json(rooms);
+    })
+    .catch((error) => {
+      console.error("Error getting documents: ", error);
+      res.status(500).json({ error: "Something went wrong" });
+    });
+});
+
+router.get("/rooms/:id", async (req, res) => {
+  const id = req.params.id;
+  const collectionRef = db.collection("rooms").doc(id.toLowerCase());
+
+  await collectionRef
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Room does not exist!" });
+      }
+      res.json(doc.data());
+    })
+    .catch((error) => {
+      console.error("Error getting documents: ", error);
+      res.status(500).json({ error: "Something went wrong" });
+    });
+});
+
+router.get("/", (req, res) => {
+  res.json("Hello");
 });
