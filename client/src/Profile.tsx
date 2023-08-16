@@ -2,6 +2,7 @@ import { useContext, useRef, useState } from "react";
 import { Navigate } from "react-router";
 import { AuthContext } from "./App";
 import useId from "react-uuid";
+// import axios from "axios";
 
 const Profile = () => {
   const { user, auth } = useContext(AuthContext);
@@ -18,6 +19,7 @@ const Profile = () => {
 
   const joinInstantRoom = () => {
     const id = useId();
+    // axios.put(`http://localhost:3000/lastRooms/${id}`).then((res) => {});
     setRedirect(`/chat?room=${id}`);
   };
 

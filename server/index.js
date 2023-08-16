@@ -166,6 +166,9 @@ io.on("connection", (socket) => {
   //Listen for chatMessage
   socket.on("chatMessage", (message) => {
     const user = getCurrentUser(socket.id);
+
+    // console.log("clients", io.clients);
+    // // io.clients.forEach
     socket.broadcast
       .to(user.chatRoom)
       .emit("message", formatMessage(`${user.userName}: `, message));
@@ -188,6 +191,15 @@ io.on("connection", (socket) => {
       .catch((error) => {
         console.log("Error writting document: ", error);
       });
+
+    // //User is typing...
+    // socket.on("is typing", (user) => {
+    //   socket.emit("typing", { userName: user.userName });
+    // });
+  });
+
+  socket.on("typing", (name) => {
+    socket.broadcast.emit("typing", name);
   });
 
   //When user disconnects
@@ -247,6 +259,21 @@ router.get("/rooms/:id", async (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
-  res.json("Hello");
-});
+// router.put("/lastRooms/:id", async (req, res) => {
+//   const id = req.params.id;
+//   const collectionRef = db.collection("lastRooms");
+
+//   await collectionRef
+//     .set(
+//       {
+//         room: id,
+//       },
+//       { merge: true }
+//     )
+//     .then(() => {
+//       console.log("Document succesfully written!");
+//     })
+//     .catch((error) => {
+//       console.log("Error writting document: ", error);
+//     });
+// });

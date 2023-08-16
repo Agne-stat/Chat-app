@@ -6,8 +6,9 @@ import { AuthContext } from "./App";
 const Chat = () => {
   const { user } = useContext(AuthContext);
   const [userMessage, setUserMessage] = useState([{}]);
-  const [room, setRoom] = useState("");
+  const [room, setRoom] = useState<string>("");
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [isTypingText, setIsTypingText] = useState<string>("");
   const userName = user?.email;
 
   const queryString = window.location.search;
@@ -19,14 +20,19 @@ const Chat = () => {
     setSocket(newSocket);
 
     newSocket.emit("joinRoom", { userName, chatRoom });
-    // newSocket.on("roomUsers", ({ room, users }) => {
-    //   console.log(room, users);
-    // });
     newSocket.on("message", (message: string) => {
       setUserMessage((userMessage) => [...userMessage, message]);
     });
 
-    if (chatRoom?.startsWith("Room")) {
+    //User is typing
+    newSocket.on("typing", (name) => {
+      setIsTypingText(`${name} is typing...`);
+      setTimeout(() => {
+        setIsTypingText("");
+      }, 10000);
+    });
+
+    if (chatRoom?.startsWith("room")) {
       return setRoom(chatRoom);
     } else {
       setRoom("Instant Room");
@@ -40,7 +46,6 @@ const Chat = () => {
 
   useEffect(() => {
     axios.get(`http://localhost:3000/rooms/${chatRoom}`).then((res) => {
-      console.log("Room DATA: ", res.data.messages);
       const messagesArray = res.data.messages;
       messagesArray.map((item: any) => {
         setUserMessage((userMessage) => [
@@ -69,6 +74,10 @@ const Chat = () => {
     ]);
   };
 
+  const handleUserTyping = () => {
+    socket!.emit("typing", userName);
+  };
+
   return (
     <div className="h-full flex flex-col place-content-between">
       <div className="m-12">
@@ -91,11 +100,13 @@ const Chat = () => {
             placeholder="Enter Message"
             required
             name="message"
+            onInput={handleUserTyping}
           />
           <button type="submit" className="h-10 bg-teal-600 p-2 w-14 mt-5">
             Send
           </button>
         </form>
+        <p className="text-gray-400">{isTypingText}</p>
       </div>
       <div className="m-12">
         <a className="h-10 bg-teal-600 p-2 w-14" href="/">
