@@ -80,34 +80,38 @@ const Chat = () => {
 
   return (
     <div className="h-full flex flex-col place-content-between">
-      <div className="m-12">
-        <h1 className="text-xl mb-5">{room}</h1>
-        <ul>
-          {userMessage.map((message, index) => (
-            <li key={index} className="flex flex-col">
-              <p className="mr-5">{message.username}</p>
-              {!!message.text && (
-                <div className="bg-gray-300 bg-opacity-25 h-auto p-2 max-w-md w-auto">
-                  {message.text}
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-        <form onSubmit={handleForm} className="flex ">
-          <input
-            type="text"
-            placeholder="Enter Message"
-            required
-            name="message"
-            onInput={handleUserTyping}
-          />
-          <button type="submit" className="h-10 bg-teal-600 p-2 w-14 mt-5">
-            Send
-          </button>
-        </form>
-        <p className="text-gray-400">{isTypingText}</p>
-      </div>
+      {userMessage.length === 1 ? (
+        <div className="text-xl m-12 text-gray-400"> Loading...</div>
+      ) : (
+        <div className="m-12">
+          <h1 className="text-xl mb-5">{room}</h1>
+          <ul>
+            {userMessage.map((message, index) => (
+              <li key={index} className="flex flex-col">
+                <p className="mr-5">{message.username}</p>
+                {!!message.text && (
+                  <div className="bg-gray-300 bg-opacity-25 h-auto p-2 max-w-md w-auto">
+                    {message.text}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+          <form onSubmit={handleForm} className="flex ">
+            <input
+              type="text"
+              placeholder="Enter Message"
+              required
+              name="message"
+              onInput={handleUserTyping}
+            />
+            <button type="submit" className="h-10 bg-teal-600 p-2 w-14 mt-5">
+              Send
+            </button>
+          </form>
+          <p className="text-gray-400">{isTypingText}</p>
+        </div>
+      )}
       <div className="m-12">
         <a className="h-10 bg-teal-600 p-2 w-14" href="/">
           Leave Room

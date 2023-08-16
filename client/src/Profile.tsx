@@ -29,6 +29,8 @@ const Profile = () => {
     setRedirect(`/chat?room=${id}`);
   };
 
+  const joinLastRoom = () => {};
+
   return (
     <div className="h-screen">
       <div className="h-screen flex flex-col">
@@ -41,37 +43,46 @@ const Profile = () => {
         </div>
 
         <div className="m-12">
-          <h2 className="flex place-content-center text-xl">Join Chat Room</h2>
-          <div className="flex place-content-between mt-20">
-            <div className="self-end">
-              <form onSubmit={handleSubmit}>
+          <>
+            <h2 className="flex place-content-center text-xl">
+              Join Chat Room
+            </h2>
+            <div className="flex place-content-between mt-20">
+              <div className="self-end">
+                <form onSubmit={handleSubmit}>
+                  <div>
+                    <select
+                      name="room"
+                      onChange={(e) => setChatRoom(e.target.value)}
+                    >
+                      <option>Select room</option>
+                      <option value="room_01">Room 01</option>
+                      <option value="room_02">Room 02</option>
+                      <option value="room_03">Room 03</option>
+                    </select>
+                  </div>
+                  <button className="h-10  bg-teal-600 p-2 ">Join Room</button>
+                </form>
+              </div>
+              <button
+                onClick={joinInstantRoom}
+                className="self-end h-10 bg-teal-600 p-2 "
+              >
+                Join Instant Room
+              </button>
+              <form onSubmit={joinRoomById}>
                 <div>
-                  <select
-                    name="room"
-                    onChange={(e) => setChatRoom(e.target.value)}
-                  >
-                    <option>Select room</option>
-                    <option value="room_01">Room 01</option>
-                    <option value="room_02">Room 02</option>
-                    <option value="room_03">Room 03</option>
-                  </select>
+                  <input placeholder="Insert room id" ref={roomId}></input>
                 </div>
-                <button className="h-10  bg-teal-600 p-2 ">Join Room</button>
+                <button className="h-10 bg-teal-600 p-2 ">
+                  Join room by id
+                </button>
               </form>
             </div>
-            <button
-              onClick={joinInstantRoom}
-              className="self-end h-10 bg-teal-600 p-2 "
-            >
-              Join Instant Room
-            </button>
-            <form onSubmit={joinRoomById}>
-              <div>
-                <input placeholder="Insert room id" ref={roomId}></input>
-              </div>
-              <button className="h-10 bg-teal-600 p-2 ">Join room by id</button>
-            </form>
-          </div>
+          </>
+          <button className="h-10 bg-teal-600 p-2 mt-40" onClick={joinLastRoom}>
+            Join last Room
+          </button>
         </div>
       </div>
     </div>
