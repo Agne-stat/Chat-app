@@ -12,6 +12,11 @@
     "socket.io": "^4.6.2"
   },
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "esbuild index.js --bundle --platform=node --outfile=dist/index.js --external:express --external:cors",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.2"
   }
 }

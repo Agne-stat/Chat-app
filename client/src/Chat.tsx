@@ -5,10 +5,13 @@ import { AuthContext } from "./App";
 
 const Chat = () => {
   const { user } = useContext(AuthContext);
-  const [userMessage, setUserMessage] = useState([{}]);
+  const [userMessage, setUserMessage] = useState<
+    { username: string; text: string }[]
+  >([{ username: "", text: "" }]);
   const [room, setRoom] = useState<string>("");
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isTypingText, setIsTypingText] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const userName = user?.email;
 
   const queryString = window.location.search;
@@ -29,7 +32,7 @@ const Chat = () => {
       setIsTypingText(`${name} is typing...`);
       setTimeout(() => {
         setIsTypingText("");
-      }, 10000);
+      }, 3000);
     });
 
     if (chatRoom?.startsWith("room")) {
@@ -45,20 +48,29 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/rooms/${chatRoom}`).then((res) => {
-      const messagesArray = res.data.messages;
-      messagesArray.map((item: any) => {
-        setUserMessage((userMessage) => [
-          ...userMessage,
-          {
-            username:
-              userName === `${item.username}` ? "Me: " : `${item.username}`,
-            text: `${item.message}` || "",
-          },
-        ]);
+    setIsLoading(true);
+    axios
+      .get(`http://localhost:3000/rooms/${chatRoom}`)
+      .then((res) => {
+        const messagesArray = res.data.messages;
+        messagesArray.map((item: any) => {
+          setUserMessage((userMessage) => [
+            ...userMessage,
+            {
+              username:
+                userName === `${item.username}` ? "Me: " : `${item.username}`,
+              text: `${item.message}` || "",
+            },
+          ]);
+        });
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
       });
-    });
   }, [chatRoom]);
+
+  console.log(userMessage);
 
   const handleForm = (e: any) => {
     e.preventDefault();
@@ -80,7 +92,7 @@ const Chat = () => {
 
   return (
     <div className="h-full flex flex-col place-content-between">
-      {userMessage.length === 1 ? (
+      {isLoading ? (
         <div className="text-xl m-12 text-gray-400"> Loading...</div>
       ) : (
         <div className="m-12">

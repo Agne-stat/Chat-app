@@ -9,7 +9,7 @@ const Profile = () => {
   const [chatRoom, setChatRoom] = useState("");
   const [redirect, setRedirect] = useState<null | string>(null);
 
-  const roomId = useRef(null);
+  const roomId = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
