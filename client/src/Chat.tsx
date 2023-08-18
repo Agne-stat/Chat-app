@@ -23,7 +23,9 @@ const Chat = () => {
     setSocket(newSocket);
 
     newSocket.emit("joinRoom", { userName, chatRoom });
-    newSocket.on("message", (message: string) => {
+    newSocket.on("message", (message: { username: string; text: string }) => {
+      console.log("message", message);
+
       setUserMessage((userMessage) => [...userMessage, message]);
     });
 
