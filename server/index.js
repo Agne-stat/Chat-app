@@ -224,9 +224,10 @@ io.on("connection", (socket) => {
 // ///****** ENDPOINTS ******///
 
 router.get("/rooms", async (req, res) => {
-  const collectionRef = db.collection("rooms");
+  // const collectionRef = db.collection("rooms");
 
-  await collectionRef
+  await db
+    .collection("rooms")
     .get()
     .then((querySnapshot) => {
       const rooms = [];
