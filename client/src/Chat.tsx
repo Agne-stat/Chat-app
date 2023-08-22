@@ -1,7 +1,9 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { AuthContext } from "./App";
+// import debounce from "lodash.debounce";
+// import throttle from "lodash.throttle";
 
 const Chat = () => {
   const { user } = useContext(AuthContext);
@@ -12,11 +14,27 @@ const Chat = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isTypingText, setIsTypingText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const userName = user?.email;
+  // const [isError, setIsError] = useState(false);
 
+  const userName = user?.email;
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const chatRoom = urlParams.get("room");
+  let timeOut: ReturnType<typeof setTimeout>;
+  const chatDivInner = useRef<HTMLUListElement>(null);
+  const chatDivOuter = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatDivOuter.current && chatDivInner.current) {
+      const innerHeight = chatDivInner.current.clientHeight;
+
+      chatDivOuter.current.scrollTo({
+        top: innerHeight,
+        left: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [userMessage]);
 
   useEffect(() => {
     const newSocket = io("ws://localhost:3000");
@@ -24,16 +42,16 @@ const Chat = () => {
 
     newSocket.emit("joinRoom", { userName, chatRoom });
     newSocket.on("message", (message: { username: string; text: string }) => {
-      console.log("message", message);
-
       setUserMessage((userMessage) => [...userMessage, message]);
     });
 
     //User is typing
     newSocket.on("typing", (name) => {
+      clearTimeout(timeOut);
       setIsTypingText(`${name} is typing...`);
-      setTimeout(() => {
+      timeOut = setTimeout(() => {
         setIsTypingText("");
+        console.log("timeOut");
       }, 3000);
     });
 
@@ -55,6 +73,8 @@ const Chat = () => {
       .get(`http://localhost:3000/rooms/${chatRoom}`)
       .then((res) => {
         const messagesArray = res.data.messages;
+        console.log(messagesArray);
+
         messagesArray.map((item: any) => {
           setUserMessage((userMessage) => [
             ...userMessage,
@@ -66,13 +86,13 @@ const Chat = () => {
           ]);
         });
       })
-      .catch(() => {})
+      .catch(() => {
+        // setIsError(true);
+      })
       .finally(() => {
         setIsLoading(false);
       });
   }, [chatRoom]);
-
-  console.log(userMessage);
 
   const handleForm = (e: any) => {
     e.preventDefault();
@@ -93,13 +113,19 @@ const Chat = () => {
   };
 
   return (
-    <div className="h-full flex flex-col place-content-between">
+    <div className="h-full flex flex-col place-content-between ">
+      {/* {isError && (
+        <div className="text-xl m-12 text-gray-400"> This room is empty</div>
+      )} */}
       {isLoading ? (
         <div className="text-xl m-12 text-gray-400"> Loading...</div>
       ) : (
-        <div className="m-12">
+        <div
+          className="m-12 relative overflow-scroll overflow-x-auto "
+          ref={chatDivOuter}
+        >
           <h1 className="text-xl mb-5">{room}</h1>
-          <ul>
+          <ul className="relative" ref={chatDivInner}>
             {userMessage.map((message, index) => (
               <li key={index} className="flex flex-col">
                 <p className="mr-5">{message.username}</p>

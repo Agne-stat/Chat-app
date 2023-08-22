@@ -259,6 +259,10 @@ router.get("/rooms/:id", async (req, res) => {
     });
 });
 
+router.get("/health", async (req, res) => {
+  res.status(200).json("OK");
+});
+
 // router.put("/lastRooms/:id", async (req, res) => {
 //   const id = req.params.id;
 //   const collectionRef = db.collection("lastRooms");
