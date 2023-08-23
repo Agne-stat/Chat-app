@@ -133,9 +133,10 @@ const getRoomUsers = (chatRoom) => {
   return users.filter((user) => user.chatRoom === chatRoom);
 };
 
+const FE_URL = process.env.FE_URL;
 const io = new socketio.Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: FE_URL,
   },
 });
 
