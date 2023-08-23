@@ -29,31 +29,32 @@ const Profile = () => {
     setRedirect(`/chat?room=${id}`);
   };
 
-  const joinLastRoom = () => {};
+  // const joinLastRoom = () => {};
 
   return (
-    <div className="h-screen">
-      <div className="h-screen flex flex-col">
+    <div className="h-screen bg-white bg-opacity-90">
+      <div className="h-screen flex flex-col w-6/12 m-auto ">
         <div className="flex place-content-between mb-20 align-bottom m-12">
-          <h1>Hi, {user?.displayName}</h1>
-          <div className="flex flex-col">
-            <p>{user?.email}</p>
+          {/* <h1 className="text-text">Hi, {user?.displayName}</h1> */}
+          <div className="flex flex-col text-text w-72 m-auto items-end">
+            <h1 className="text-text">Hi, {user?.displayName}</h1>
             <button onClick={() => auth?.signOut()}>Logout</button>
           </div>
         </div>
 
         <div className="m-12">
           <>
-            <h2 className="flex place-content-center text-xl">
+            <h2 className="flex place-content-center text-3xl text-background">
               Join Chat Room
             </h2>
-            <div className="flex place-content-between mt-20">
-              <div className="self-end">
-                <form onSubmit={handleSubmit}>
-                  <div>
+            <div className="flex flex-col mt-20 w-72 m-auto ">
+              <div className="self-end w-full mb-5 rounded shadow-md">
+                <form onSubmit={handleSubmit} className="w-full">
+                  <div className="w-full">
                     <select
                       name="room"
                       onChange={(e) => setChatRoom(e.target.value)}
+                      className="w-full"
                     >
                       <option>Select room</option>
                       <option value="room_01">Room 01</option>
@@ -61,28 +62,34 @@ const Profile = () => {
                       <option value="room_03">Room 03</option>
                     </select>
                   </div>
-                  <button className="h-10  bg-teal-600 p-2 ">Join Room</button>
+                  <button className="h-10  bg-primary p-2 w-full">
+                    Join Room
+                  </button>
                 </form>
               </div>
               <button
                 onClick={joinInstantRoom}
-                className="self-end h-10 bg-teal-600 p-2 "
+                className="self-end h-10 bg-primary p-2 w-full mb-5 shadow-md"
               >
                 Join Instant Room
               </button>
-              <form onSubmit={joinRoomById}>
-                <div>
-                  <input placeholder="Insert room id" ref={roomId}></input>
+              <form onSubmit={joinRoomById} className="w-full mb-5 shadow-md">
+                <div className="w-full">
+                  <input
+                    placeholder="Insert room id"
+                    ref={roomId}
+                    className="w-full"
+                  ></input>
                 </div>
-                <button className="h-10 bg-teal-600 p-2 ">
+                <button className="h-10 bg-primary p-2 w-full">
                   Join room by id
                 </button>
               </form>
             </div>
           </>
-          <button className="h-10 bg-teal-600 p-2 mt-40" onClick={joinLastRoom}>
+          {/* <button className="h-10 bg-teal-600 p-2 mt-40" onClick={joinLastRoom}>
             Join last Room
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
