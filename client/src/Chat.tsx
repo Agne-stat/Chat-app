@@ -24,6 +24,8 @@ const Chat = () => {
   const chatDivInner = useRef<HTMLUListElement>(null);
   const chatDivOuter = useRef<HTMLDivElement>(null);
 
+  const { VITE_BE_URL } = import.meta.env as Record<string, string | undefined>;
+
   useEffect(() => {
     if (chatDivOuter.current && chatDivInner.current) {
       const innerHeight = chatDivInner.current.clientHeight;
@@ -37,7 +39,7 @@ const Chat = () => {
   }, [userMessage]);
 
   useEffect(() => {
-    const newSocket = io("ws://localhost:3000");
+    const newSocket = io(VITE_BE_URL || "");
     setSocket(newSocket);
 
     newSocket.emit("joinRoom", { userName, chatRoom });
@@ -69,8 +71,10 @@ const Chat = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    console.log(VITE_BE_URL);
+
     axios
-      .get(`http://localhost:3000/rooms/${chatRoom}`)
+      .get(`${VITE_BE_URL}/rooms/${chatRoom}`)
       .then((res) => {
         const messagesArray = res.data.messages;
         console.log(messagesArray);
