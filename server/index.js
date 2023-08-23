@@ -140,12 +140,6 @@ const io = new socketio.Server(server, {
   cors: {
     origin: FE_URL,
   },
-  // cors: {
-  //   origin: FE_URL,
-  //   methods: ["GET", "POST"],
-  //   allowedHeaders: ["Authorization", "Content-Type"],
-  //   credentials: true,
-  // },
 });
 
 io.on("connection", (socket) => {
