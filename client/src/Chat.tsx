@@ -84,7 +84,7 @@ const Chat = () => {
             ...userMessage,
             {
               username:
-                userName === `${item.username}` ? "Me: " : `${item.username}`,
+                userName === `${item.username}` ? "Me" : `${item.username}`,
               text: `${item.message}` || "",
             },
           ]);
@@ -106,7 +106,7 @@ const Chat = () => {
     setUserMessage((userMessage) => [
       ...userMessage,
       {
-        username: `Me: `,
+        username: `Me`,
         text: `${e.target.message.value}` || "",
       },
     ]);
@@ -117,7 +117,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="h-full flex flex-col place-content-between opacity-90 m-10">
+    <div className="h-full flex flex-col place-content-between opacity-90 m-5 md:m-10">
       {/* {isError && (
         <div className="text-xl m-12 text-gray-400"> This room is empty</div>
       )} */}
@@ -125,7 +125,7 @@ const Chat = () => {
         <div className="text-xl m-12 text-gray-400"> Loading...</div>
       ) : (
         <div
-          className="relative overflow-scroll overflow-x-auto w-8/12 m-auto mb-10 mt-10"
+          className="relative overflow-scroll overflow-x-auto md:w-5/12 m-auto md:mb-10 md:mt-10"
           ref={chatDivOuter}
         >
           <h1 className="text-xl mb-5">{room}</h1>
@@ -134,14 +134,14 @@ const Chat = () => {
               <li
                 key={index}
                 className={`${
-                  message.username === "Me: " ? "items-end" : "items-start"
+                  message.username === "Me" ? "items-end" : "items-start"
                 } flex flex-col`}
               >
                 <p className="mr-5">{message.username}</p>
                 {!!message.text && (
                   <div
                     className={` ${
-                      message.username === "Me: " ? "bg-white" : "bg-primary"
+                      message.username === "Me" ? "bg-white" : "bg-primary"
                     } h-auto p-2 max-w-xs w-max rounded-2xl shadow-md mb-5`}
                   >
                     {message.text}
@@ -168,7 +168,7 @@ const Chat = () => {
           <p className="text-gray-400">{isTypingText}</p>
         </div>
       )}
-      <div className="w-8/12 m-auto mb-10 mt-10">
+      <div className="md:w-5/12 m-auto mb-10 mt-10">
         <a className="h-10 bg-primary p-2 w-14 rounded-2xl" href="/">
           Leave Room
         </a>
