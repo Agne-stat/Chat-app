@@ -151,6 +151,8 @@ io.on("connection", (socket) => {
 
     socket.emit("message", formatMessage(chatName, "Welcome"));
 
+    // socket.emit("typing", userName);
+
     //When user connects, does not show for THE user that is connecting
     socket.broadcast
       .to(user.chatRoom)
@@ -164,6 +166,8 @@ io.on("connection", (socket) => {
       room: user.chatRoom,
       users: getRoomUsers(user.chatRoom),
     });
+
+    // io.to("roomName").emit("typing", userName);
   });
 
   //Listen for chatMessage
@@ -194,16 +198,20 @@ io.on("connection", (socket) => {
       .catch((error) => {
         console.log("Error writting document: ", error);
       });
-
-    // //User is typing...
-    // socket.on("is typing", (user) => {
-    //   socket.emit("typing", { userName: user.userName });
-    // });
   });
 
-  socket.on("typing", (name) => {
-    socket.broadcast.emit("typing", name);
+  socket.on("typing", (chatRoom, userName) => {
+    io.to(chatRoom).emit("typing", userName);
   });
+
+  // socket.on("joinRoom").emit("typing", (name) => {
+  //   socket.broadcast.emit("typing", name);
+  // });
+  // socket.on("typing", (name) => {
+  //   socket.broadcast.emit("typing", name);
+  // });
+
+  // io.to("roomName").emit("typing", username);
 
   //When user disconnects
   socket.on("disconnect", () => {

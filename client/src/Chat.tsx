@@ -71,8 +71,6 @@ const Chat = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log(VITE_BE_URL);
-
     axios
       .get(`${VITE_BE_URL}/rooms/${chatRoom}`)
       .then((res) => {
@@ -113,7 +111,7 @@ const Chat = () => {
   };
 
   const handleUserTyping = () => {
-    socket!.emit("typing", userName);
+    socket!.emit("typing", chatRoom, userName);
   };
 
   return (
@@ -125,7 +123,7 @@ const Chat = () => {
         <div className="text-xl m-12 text-gray-400"> Loading...</div>
       ) : (
         <div
-          className="relative overflow-scroll overflow-x-auto md:w-5/12 m-auto md:mb-10 md:mt-10"
+          className="relative overflow-scroll overflow-x-hidden md:w-5/12 m-auto md:mb-10 md:mt-10"
           ref={chatDivOuter}
         >
           <h1 className="text-xl mb-5">{room}</h1>
