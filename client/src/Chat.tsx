@@ -115,7 +115,9 @@ const Chat = () => {
   };
 
   return (
-    <div className="h-full flex flex-col place-content-between opacity-90 m-5 md:m-10">
+    <div className="h-full flex flex-col place-content-between opacity-90 p-5">
+      <h1 className="text-xl mb-5 md:w-5/12 m-auto">{room}</h1>
+
       {/* {isError && (
         <div className="text-xl m-12 text-gray-400"> This room is empty</div>
       )} */}
@@ -123,10 +125,9 @@ const Chat = () => {
         <div className="text-xl m-12 text-gray-400"> Loading...</div>
       ) : (
         <div
-          className="relative overflow-scroll overflow-x-hidden md:w-5/12 m-auto md:mb-10 md:mt-10"
+          className="relative overflow-scroll overflow-x-hidden md:w-5/12 m-auto"
           ref={chatDivOuter}
         >
-          <h1 className="text-xl mb-5">{room}</h1>
           <ul className="relative" ref={chatDivInner}>
             {userMessage.map((message, index) => (
               <li
@@ -148,25 +149,25 @@ const Chat = () => {
               </li>
             ))}
           </ul>
-          <form onSubmit={handleForm} className="flex ">
-            <input
-              type="text"
-              placeholder="Enter Message"
-              required
-              name="message"
-              onInput={handleUserTyping}
-            />
-            <button
-              type="submit"
-              className="h-10 bg-primary p-2 w-14 mt-5 rounded-2xl"
-            >
-              Send
-            </button>
-          </form>
-          <p className="text-gray-400">{isTypingText}</p>
         </div>
       )}
-      <div className="md:w-5/12 m-auto mb-10 mt-10">
+      <form onSubmit={handleForm} className="flex md:w-5/12 m-auto">
+        <input
+          type="text"
+          placeholder="Enter Message"
+          required
+          name="message"
+          onInput={handleUserTyping}
+        />
+        <button
+          type="submit"
+          className="h-10 bg-primary p-2 w-14 mt-5 rounded-2xl"
+        >
+          Send
+        </button>
+      </form>
+      <p className="flex h-10 text-gray-400 md:w-5/12 m-auto">{isTypingText}</p>
+      <div className="md:w-5/12 m-auto mt-10 ">
         <a className="h-10 bg-primary p-2 w-14 rounded-2xl" href="/">
           Leave Room
         </a>
