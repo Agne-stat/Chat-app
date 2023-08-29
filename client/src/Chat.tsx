@@ -2,8 +2,6 @@ import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { AuthContext } from "./App";
-// import debounce from "lodash.debounce";
-// import throttle from "lodash.throttle";
 
 const Chat = () => {
   const { user } = useContext(AuthContext);
