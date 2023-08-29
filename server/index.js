@@ -201,7 +201,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing", (chatRoom, userName) => {
-    io.to(chatRoom).emit("typing", userName);
+    socket.broadcast.to(chatRoom).emit("typing", userName);
   });
 
   // socket.on("joinRoom").emit("typing", (name) => {
