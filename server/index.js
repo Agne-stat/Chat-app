@@ -6,6 +6,7 @@ const admin = require("firebase-admin");
 const key = require("./key.json");
 const FieldValue = require("firebase-admin").firestore.FieldValue;
 const dotenv = require("dotenv");
+const { instrument } = require("@socket.io/admin-ui");
 
 const app = express();
 const server = http.createServer(app);
@@ -34,6 +35,7 @@ router.post("/sendMessage", (req, res) => {
   // Add the message to the Firestore collection
   messagesRef
     .add({
+      timestamp,
       username,
       message,
     })
@@ -97,8 +99,9 @@ documentRef
   });
 
 ///****** SOCKETS ******///
-const formatMessage = (username, text) => {
+const formatMessage = (timestamp, username, text) => {
   return {
+    timestamp,
     username,
     text,
   };
@@ -142,6 +145,11 @@ const io = new socketio.Server(server, {
   },
 });
 
+instrument(io, {
+  auth: false,
+  mode: "development",
+});
+
 io.on("connection", (socket) => {
   //user connect to the room
   socket.on("joinRoom", ({ userName, chatRoom }) => {
@@ -151,14 +159,16 @@ io.on("connection", (socket) => {
 
     socket.emit("message", formatMessage(chatName, "Welcome"));
 
-    // socket.emit("typing", userName);
-
     //When user connects, does not show for THE user that is connecting
     socket.broadcast
       .to(user.chatRoom)
       .emit(
         "message",
-        formatMessage(chatName, `${user.userName} has joined the chat!`)
+        formatMessage(
+          new Date().toLocaleString(),
+          chatName,
+          `${user.userName} has joined the chat!`
+        )
       );
 
     //send users and room info
@@ -166,16 +176,16 @@ io.on("connection", (socket) => {
       room: user.chatRoom,
       users: getRoomUsers(user.chatRoom),
     });
-
-    // io.to("roomName").emit("typing", userName);
   });
 
   //Listen for chatMessage
-  socket.on("chatMessage", (message) => {
+  socket.on("chatMessage", (message, callback) => {
+    callback("Error from BE");
     const user = getCurrentUser(socket.id);
 
-    // console.log("clients", io.clients);
-    // // io.clients.forEach
+    if (!user) {
+      return;
+    }
     socket.broadcast
       .to(user.chatRoom)
       .emit("message", formatMessage(`${user.userName}: `, message));
@@ -203,15 +213,6 @@ io.on("connection", (socket) => {
   socket.on("typing", (chatRoom, userName) => {
     socket.broadcast.to(chatRoom).emit("typing", userName);
   });
-
-  // socket.on("joinRoom").emit("typing", (name) => {
-  //   socket.broadcast.emit("typing", name);
-  // });
-  // socket.on("typing", (name) => {
-  //   socket.broadcast.emit("typing", name);
-  // });
-
-  // io.to("roomName").emit("typing", username);
 
   //When user disconnects
   socket.on("disconnect", () => {

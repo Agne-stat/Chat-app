@@ -19,7 +19,6 @@ const Profile = () => {
 
   const joinInstantRoom = () => {
     const id = useId();
-    // axios.put(`http://localhost:3000/lastRooms/${id}`).then((res) => {});
     setRedirect(`/chat?room=${id}`);
   };
 
@@ -29,13 +28,10 @@ const Profile = () => {
     setRedirect(`/chat?room=${id}`);
   };
 
-  // const joinLastRoom = () => {};
-
   return (
     <div className="h-screen bg-white bg-opacity-90">
       <div className="h-screen flex flex-col w-6/12 m-auto ">
         <div className="flex place-content-between mb-20 align-bottom m-12">
-          {/* <h1 className="text-text">Hi, {user?.displayName}</h1> */}
           <div className="flex flex-col text-text w-72 m-auto items-end">
             <h1 className="text-text">Hi, {user?.displayName}</h1>
             <button onClick={() => auth?.signOut()}>Logout</button>

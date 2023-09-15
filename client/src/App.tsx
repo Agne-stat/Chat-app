@@ -44,9 +44,7 @@ const App = () => {
   const [user, setUser] = useState<null | User>(null);
 
   const app = initializeApp(firebaseConfig);
-  // const db = getFirestore(app);
   const auth = getAuth(app);
-  // const defaultStorage = getStorage();
 
   useEffect(() => {
     onAuthStateChanged(auth, (u) => {

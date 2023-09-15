@@ -8,10 +8,12 @@ const Chat = () => {
   const [userMessage, setUserMessage] = useState<
     { username: string; text: string }[]
   >([{ username: "", text: "" }]);
-  const [room, setRoom] = useState<string>("");
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isTypingText, setIsTypingText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [allChatUsers, setAllChatUsers] = useState([]);
+  const [showAllChatUsers, setShowAllChatUsers] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   // const [isError, setIsError] = useState(false);
 
   const userName = user?.email;
@@ -41,6 +43,7 @@ const Chat = () => {
     setSocket(newSocket);
 
     newSocket.emit("joinRoom", { userName, chatRoom });
+
     newSocket.on("message", (message: { username: string; text: string }) => {
       setUserMessage((userMessage) => [...userMessage, message]);
     });
@@ -51,15 +54,8 @@ const Chat = () => {
       setIsTypingText(`${name} is typing...`);
       timeOut = setTimeout(() => {
         setIsTypingText("");
-        console.log("timeOut");
       }, 3000);
     });
-
-    if (chatRoom?.startsWith("room")) {
-      return setRoom(chatRoom);
-    } else {
-      setRoom("Instant Room");
-    }
 
     return () => {
       newSocket.off("message");
@@ -73,7 +69,6 @@ const Chat = () => {
       .get(`${VITE_BE_URL}/rooms/${chatRoom}`)
       .then((res) => {
         const messagesArray = res.data.messages;
-        console.log(messagesArray);
 
         messagesArray.map((item: any) => {
           setUserMessage((userMessage) => [
@@ -84,6 +79,8 @@ const Chat = () => {
               text: `${item.message}` || "",
             },
           ]);
+
+          setAllChatUsers((prevState) => [...prevState, item.username]);
         });
       })
       .catch(() => {
@@ -94,33 +91,54 @@ const Chat = () => {
       });
   }, [chatRoom]);
 
-  const handleForm = (e: any) => {
-    e.preventDefault();
-    //Emit message to serve
-    if (socket) socket.emit("chatMessage", e.target.message.value);
+  const uniqueUsersArray = [...new Set(allChatUsers)];
 
-    setUserMessage((userMessage) => [
-      ...userMessage,
-      {
-        username: `Me`,
-        text: `${e.target.message.value}` || "",
-      },
-    ]);
+  const handleForm = () => {
+    //Emit message to serve
+    if (socket)
+      socket.emit("chatMessage", inputValue, (value: string) => {
+        console.log(value);
+      });
+
+    if (!!inputValue) {
+      setUserMessage((userMessage) => [
+        ...userMessage,
+        {
+          username: `Me`,
+          text: `${inputValue}` || "",
+        },
+      ]);
+      setInputValue("");
+    }
   };
 
   const handleUserTyping = () => {
     socket!.emit("typing", chatRoom, userName);
   };
 
+  const showUsersPopup = () => {
+    setShowAllChatUsers(!showAllChatUsers);
+  };
+
   return (
     <div className="h-full flex flex-col place-content-between opacity-90 p-5">
-      <h1 className="text-xl mb-5 md:w-5/12 m-auto">{room}</h1>
-
-      {/* {isError && (
-        <div className="text-xl m-12 text-gray-400"> This room is empty</div>
-      )} */}
+      <div className="mb-5 md:w-5/12 m-auto flex place-content-between align-middle relative">
+        <h1 className="text-xl">{chatRoom}</h1>
+        <p className="text-accent cursor-pointer" onClick={showUsersPopup}>
+          Users
+        </p>
+        {showAllChatUsers && (
+          <div className="absolute w-96 flex flex-col bg-white z-20 shadow-md rounded-2xl p-2">
+            {uniqueUsersArray.map((item) => (
+              <p key={item} className="text-sm">
+                {item}
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
       {isLoading ? (
-        <div className="text-xl m-12 text-gray-400"> Loading...</div>
+        <div className="text-xl text-gray-400 md:w-5/12 m-auto">Loading...</div>
       ) : (
         <div
           className="relative overflow-scroll overflow-x-hidden md:w-5/12 m-auto"
@@ -134,7 +152,12 @@ const Chat = () => {
                   message.username === "Me" ? "items-end" : "items-start"
                 } flex flex-col`}
               >
-                <p className="mr-5">{message.username}</p>
+                <p className="mr-5">
+                  <span className="p-2 text-text">
+                    {new Date().toLocaleString()}
+                  </span>
+                  {message.username}
+                </p>
                 {!!message.text && (
                   <div
                     className={` ${
@@ -149,24 +172,27 @@ const Chat = () => {
           </ul>
         </div>
       )}
-      <form onSubmit={handleForm} className="flex md:w-5/12 m-auto">
+      <form className="flex md:w-5/12 m-auto justify-between">
         <input
           type="text"
           placeholder="Enter Message"
           required
           name="message"
           onInput={handleUserTyping}
+          className="w-4/5"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
         />
         <button
-          type="submit"
           className="h-10 bg-primary p-2 w-14 mt-5 rounded-2xl"
+          onClick={handleForm}
         >
           Send
         </button>
       </form>
       <p className="flex h-10 text-gray-400 md:w-5/12 m-auto">{isTypingText}</p>
       <div className="md:w-5/12 m-auto mt-10 ">
-        <a className="h-10 bg-primary p-2 w-14 rounded-2xl" href="/">
+        <a className="h-10 bg-accent p-2 w-14 rounded-2xl" href="/">
           Leave Room
         </a>
       </div>
