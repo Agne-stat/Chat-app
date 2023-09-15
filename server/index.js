@@ -142,8 +142,8 @@ const FE_URL = process.env.FE_URL;
 const io = new socketio.Server(server, {
   cors: {
     origin: [FE_URL, "https://admin.socket.io"],
+    credentials: true,
   },
-  credentials: true,
 });
 
 instrument(io, {
