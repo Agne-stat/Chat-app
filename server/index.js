@@ -141,13 +141,14 @@ const getRoomUsers = (chatRoom) => {
 const FE_URL = process.env.FE_URL;
 const io = new socketio.Server(server, {
   cors: {
-    origin: FE_URL,
+    origin: [FE_URL, "https://admin.socket.io"],
   },
+  credentials: true,
 });
 
 instrument(io, {
   auth: false,
-  mode: "development",
+  // mode: "development",
 });
 
 io.on("connection", (socket) => {
