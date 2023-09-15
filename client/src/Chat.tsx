@@ -11,7 +11,7 @@ const Chat = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isTypingText, setIsTypingText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [allChatUsers, setAllChatUsers] = useState([]);
+  const [allChatUsers, setAllChatUsers] = useState<string[]>([""]);
   const [showAllChatUsers, setShowAllChatUsers] = useState(false);
   const [inputValue, setInputValue] = useState("");
   // const [isError, setIsError] = useState(false);
