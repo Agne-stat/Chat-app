@@ -93,7 +93,8 @@ const Chat = () => {
 
   const uniqueUsersArray = [...new Set(allChatUsers)];
 
-  const handleForm = () => {
+  const handleForm = (e: any) => {
+    e.preventDefault();
     //Emit message to serve
     if (socket)
       socket.emit("chatMessage", inputValue, (value: string) => {
@@ -109,6 +110,8 @@ const Chat = () => {
         },
       ]);
       setInputValue("");
+    } else {
+      return;
     }
   };
 
@@ -176,7 +179,6 @@ const Chat = () => {
         <input
           type="text"
           placeholder="Enter Message"
-          required
           name="message"
           onInput={handleUserTyping}
           className="w-4/5"
