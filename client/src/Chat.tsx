@@ -101,7 +101,7 @@ const Chat = () => {
         console.log(value);
       });
 
-    if (!!inputValue) {
+    if (!!inputValue && inputValue.replace(/\s/g, "") !== "") {
       setUserMessage((userMessage) => [
         ...userMessage,
         {
@@ -125,13 +125,13 @@ const Chat = () => {
 
   return (
     <div className="h-full flex flex-col place-content-between opacity-90 p-5">
-      <div className="mb-5 md:w-5/12 m-auto flex place-content-between align-middle relative">
+      <div className="mb-5 md:w-5/12 md:m-auto flex place-content-between align-middle relative">
         <h1 className="text-xl">{chatRoom}</h1>
         <p className="text-accent cursor-pointer" onClick={showUsersPopup}>
           Users
         </p>
         {showAllChatUsers && (
-          <div className="absolute w-96 flex flex-col bg-white z-20 shadow-md rounded-2xl p-2">
+          <div className="absolute w-80 flex flex-col bg-white z-20 shadow-md rounded-2xl p-2">
             {uniqueUsersArray.map((item) => (
               <p key={item} className="text-sm">
                 {item}
@@ -175,7 +175,7 @@ const Chat = () => {
           </ul>
         </div>
       )}
-      <form className="flex md:w-5/12 m-auto justify-between">
+      <form className="flex md:w-5/12  justify-between md:m-auto">
         <input
           type="text"
           placeholder="Enter Message"
@@ -192,8 +192,10 @@ const Chat = () => {
           Send
         </button>
       </form>
-      <p className="flex h-10 text-gray-400 md:w-5/12 m-auto">{isTypingText}</p>
-      <div className="md:w-5/12 m-auto mt-10 ">
+      <p className="flex h-10 text-gray-400 md:w-5/12 md:m-auto">
+        {isTypingText}
+      </p>
+      <div className="md:w-5/12 mt-10 md:m-auto">
         <a className="h-10 bg-accent p-2 w-14 rounded-2xl" href="/">
           Leave Room
         </a>
