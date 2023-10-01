@@ -34,7 +34,7 @@ const Profile = () => {
 
   return (
     <div className="h-screen bg-white bg-opacity-90">
-      <div className="h-screen flex flex-col w-6/12 m-auto ">
+      <div className="h-screen flex flex-col md:w-5/12 md:m-auto ">
         <div className="flex place-content-between mb-20 align-bottom m-12">
           <div className="flex flex-col text-text w-72 m-auto items-end">
             <h1 className="text-text">Hi, {user?.displayName}</h1>
