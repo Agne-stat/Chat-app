@@ -13,7 +13,9 @@ const Profile = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    setRedirect(`/chat?room=${chatRoom}`);
+    if (!!chatRoom) {
+      setRedirect(`/chat?room=${chatRoom}`);
+    }
   };
   if (redirect) return <Navigate to={redirect} replace={true} />;
 
@@ -25,7 +27,9 @@ const Profile = () => {
   const joinRoomById = (e: any) => {
     e.preventDefault();
     const id = roomId.current!.value;
-    setRedirect(`/chat?room=${id}`);
+    if (!!id) {
+      setRedirect(`/chat?room=${id}`);
+    }
   };
 
   return (
