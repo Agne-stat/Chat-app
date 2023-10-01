@@ -7,6 +7,12 @@ const key = require("./key.json");
 const FieldValue = require("firebase-admin").firestore.FieldValue;
 const dotenv = require("dotenv");
 const { instrument } = require("@socket.io/admin-ui");
+const {
+  userJoin,
+  getCurrentUser,
+  userDisconnect,
+  getRoomUsers,
+} = require("./utils");
 
 const app = express();
 const server = http.createServer(app);
@@ -20,34 +26,6 @@ app.use("/", router);
 
 // Use the JSON middleware to parse incoming JSON data
 app.use(express.json());
-
-// Define the route to store chat messages
-router.post("/sendMessage", (req, res) => {
-  const username = req.body.username;
-  const message = req.body.message;
-
-  if (!username || !message) {
-    return res.status(400).json({ error: "Incomplete message data" });
-  }
-
-  const messagesRef = db.collection("rooms").doc(id);
-
-  // Add the message to the Firestore collection
-  messagesRef
-    .add({
-      timestamp,
-      username,
-      message,
-    })
-    .then((docRef) => {
-      // console.log("Message successfully written with ID: ", docRef.id);
-      res.status(201).json({ message: "Message sent successfully" });
-    })
-    .catch((error) => {
-      console.error("Error writing message: ", error);
-      res.status(500).json({ error: "Something went wrong" });
-    });
-});
 
 ///****** FIRESTORE ******///
 // seting up firestore
@@ -99,9 +77,8 @@ documentRef
   });
 
 ///****** SOCKETS ******///
-const formatMessage = (timestamp, username, text) => {
+const formatMessage = (username, text) => {
   return {
-    timestamp,
     username,
     text,
   };
@@ -109,34 +86,34 @@ const formatMessage = (timestamp, username, text) => {
 
 const chatName = "Chat Bot: ";
 
-const users = [];
+// const users = [];
 
-// join user to chat
-const userJoin = (id, userName, chatRoom) => {
-  const user = { id, userName, chatRoom };
+// // join user to chat
+// const userJoin = (id, userName, chatRoom) => {
+//   const user = { id, userName, chatRoom };
 
-  users.push(user);
-  return user;
-};
+//   users.push(user);
+//   return user;
+// };
 
-// get current user
-const getCurrentUser = (id) => {
-  return users.find((user) => user.id === id);
-};
+// // get current user
+// const getCurrentUser = (id) => {
+//   return users.find((user) => user.id === id);
+// };
 
-//user disconnects
-const userDisconnect = (id) => {
-  const index = users.findIndex((user) => user.id === id);
+// //user disconnects
+// const userDisconnect = (id) => {
+//   const index = users.findIndex((user) => user.id === id);
 
-  if (index !== -1) {
-    return users.splice(index, 1)[0];
-  }
-};
+//   if (index !== -1) {
+//     return users.splice(index, 1)[0];
+//   }
+// };
 
-//get room users
-const getRoomUsers = (chatRoom) => {
-  return users.filter((user) => user.chatRoom === chatRoom);
-};
+// //get room users
+// const getRoomUsers = (chatRoom) => {
+//   return users.filter((user) => user.chatRoom === chatRoom);
+// };
 
 const FE_URL = process.env.FE_URL;
 const io = new socketio.Server(server, {
@@ -165,11 +142,7 @@ io.on("connection", (socket) => {
       .to(user.chatRoom)
       .emit(
         "message",
-        formatMessage(
-          new Date().toLocaleString(),
-          chatName,
-          `${user.userName} has joined the chat!`
-        )
+        formatMessage(chatName, `${user.userName} has joined the chat!`)
       );
 
     //send users and room info
@@ -235,6 +208,33 @@ io.on("connection", (socket) => {
 });
 
 // ///****** ENDPOINTS ******///
+
+// Define the route to store chat messages
+router.post("/sendMessage", (req, res) => {
+  const username = req.body.username;
+  const message = req.body.message;
+
+  if (!username || !message) {
+    return res.status(400).json({ error: "Incomplete message data" });
+  }
+
+  const messagesRef = db.collection("rooms").doc(id);
+
+  // Add the message to the Firestore collection
+  messagesRef
+    .add({
+      username,
+      message,
+    })
+    .then((docRef) => {
+      // console.log("Message successfully written with ID: ", docRef.id);
+      res.status(201).json({ message: "Message sent successfully" });
+    })
+    .catch((error) => {
+      console.error("Error writing message: ", error);
+      res.status(500).json({ error: "Something went wrong" });
+    });
+});
 
 router.get("/rooms", async (req, res) => {
   // const collectionRef = db.collection("rooms");
