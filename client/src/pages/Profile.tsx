@@ -1,8 +1,7 @@
 import { useContext, useRef, useState } from "react";
 import { Navigate } from "react-router";
-import { AuthContext } from "./App";
+import { AuthContext } from "../App";
 import useId from "react-uuid";
-// import axios from "axios";
 
 const Profile = () => {
   const { user, auth } = useContext(AuthContext);
@@ -87,9 +86,6 @@ const Profile = () => {
               </form>
             </div>
           </>
-          {/* <button className="h-10 bg-teal-600 p-2 mt-40" onClick={joinLastRoom}>
-            Join last Room
-          </button> */}
         </div>
       </div>
     </div>

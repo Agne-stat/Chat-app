@@ -9,8 +9,8 @@ import {
 import React, { useEffect, useState } from "react";
 import { StyledFirebaseAuth } from "react-firebaseui";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Chat from "./Chat";
-import Profile from "./Profile";
+import Chat from "./pages/Chat";
+import Profile from "./pages/Profile";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA3r5a1xAkywQbpxxetTZwmBU8P7ojAj5g",
