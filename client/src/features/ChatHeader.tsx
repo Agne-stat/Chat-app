@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import AllUsers from "../components/AllUsers";
+import Button from "../components/Button";
+import Title from "../components/Title";
+import AllUsers from "./AllUsers";
 import { ChatHeaderProps } from "./types";
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({
@@ -14,10 +16,12 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
 
   return (
     <div className="mb-5 md:w-5/12 md:m-auto flex place-content-between align-middle relative">
-      <h1 className="text-xl">{chatRoom}</h1>
-      <p className="text-accent cursor-pointer" onClick={showUsersPopup}>
-        Users
-      </p>
+      <Title text={chatRoom!} className="text-text text-xl" />
+      <Button
+        text="Users"
+        className="text-text w-auto"
+        onClick={showUsersPopup}
+      />
       {showAllChatUsers && <AllUsers uniqueUsersArray={uniqueUsersArray} />}
     </div>
   );

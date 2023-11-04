@@ -2,11 +2,11 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { AuthContext } from "../App";
-import ChatBody from "../components/ChatBody";
-import ChatBottom from "../components/ChatBottom";
-import ChatHeader from "../components/ChatHeader";
-import Loader from "../components/Loader";
-import MessageInput from "../components/MessageInput";
+import ChatBody from "../features/ChatBody";
+import ChatBottom from "../features/ChatBottom";
+import ChatHeader from "../features/ChatHeader";
+import Loader from "../features/Loader";
+import MessageInput from "../features/MessageInput";
 
 const Chat = () => {
   const { user } = useContext(AuthContext);
@@ -18,7 +18,7 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [allChatUsers, setAllChatUsers] = useState<string[]>([""]);
   const [inputValue, setInputValue] = useState("");
-  // const [isError, setIsError] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const userName = user?.email;
   const queryString = window.location.search;
@@ -37,6 +37,7 @@ const Chat = () => {
 
     newSocket.on("message", (message: { username: string; text: string }) => {
       setUserMessage((userMessage) => [...userMessage, message]);
+      console.log("message: ", message);
     });
 
     //User is typing
@@ -75,10 +76,11 @@ const Chat = () => {
         });
       })
       .catch(() => {
-        // setIsError(true);
+        setIsError(true);
       })
       .finally(() => {
         setIsLoading(false);
+        setIsError(false);
       });
   }, [chatRoom]);
 
@@ -109,15 +111,24 @@ const Chat = () => {
   };
 
   return (
-    <div className="h-full flex flex-col place-content-between opacity-90 p-5">
+    <div className="h-full flex flex-col place-content-between p-8">
       <ChatHeader chatRoom={chatRoom} uniqueUsersArray={uniqueUsersArray} />
-      {isLoading ? <Loader /> : <ChatBody userMessage={userMessage} />}
-      <MessageInput
-        handleUserTyping={handleUserTyping}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
-        handleForm={(e) => handleForm(e)}
-      />
+      {isError && (
+        <div className="text-xl text-gray-400 md:w-5/12 m-auto"></div>
+      )}
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <ChatBody userMessage={userMessage} />
+          <MessageInput
+            handleUserTyping={handleUserTyping}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            handleForm={(e) => handleForm(e)}
+          />
+        </>
+      )}
       <ChatBottom isTypingText={isTypingText} />
     </div>
   );

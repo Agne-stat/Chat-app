@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import Message from "../components/Message";
+import Message from "./Message";
 import { UserMessageProps } from "./types";
 
 const ChatBody: React.FC<UserMessageProps> = ({ userMessage }) => {
@@ -20,7 +20,7 @@ const ChatBody: React.FC<UserMessageProps> = ({ userMessage }) => {
 
   return (
     <div
-      className="relative overflow-scroll overflow-x-hidden md:w-5/12 m-auto"
+      className="relative overflow-scroll overflow-x-hidden mb-5 md:w-5/12 md:m-auto no-scrollbar"
       ref={chatDivOuter}
     >
       <ul className="relative" ref={chatDivInner}>

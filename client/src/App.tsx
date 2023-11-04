@@ -42,7 +42,6 @@ export const AuthContext = React.createContext<{
 
 const App = () => {
   const [user, setUser] = useState<null | User>(null);
-
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 

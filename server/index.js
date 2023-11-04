@@ -12,7 +12,7 @@ const {
   getCurrentUser,
   userDisconnect,
   getRoomUsers,
-} = require("./utils");
+} = require("./helpers.js");
 const router = require("./router.js");
 const db = require("./firestore.js");
 
@@ -57,6 +57,25 @@ io.on("connection", (socket) => {
     const user = userJoin(socket.id, userName, chatRoom);
 
     socket.join(user.chatRoom);
+
+    // Setting up collection for user rooms
+    const userRef = db.collection("saveRoomToUser").doc(user.userName);
+
+    userRef
+      .set(
+        {
+          rooms: FieldValue.arrayUnion({
+            room: user.chatRoom,
+          }),
+        },
+        { merge: true }
+      )
+      .then(() => {
+        console.log("Document succesfully written!");
+      })
+      .catch((error) => {
+        console.log("Error writting document: ", error);
+      });
 
     socket.emit("message", formatMessage(chatName, "Welcome"));
 

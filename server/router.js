@@ -2,6 +2,31 @@ const express = require("express");
 const router = express.Router();
 const db = require("./firestore.js");
 
+// Define the route to store rooms for user
+router.post("/saveRooms", (req, res) => {
+  const room = req.body.username;
+
+  if (!room) {
+    return res.status(400).json({ error: "Incomplete room data" });
+  }
+
+  const userRef = db.collection("saveRoomToUser").doc(id);
+
+  // Add the message to the Firestore collection
+  userRef
+    .add({
+      room,
+    })
+    .then((docRef) => {
+      // console.log("Message successfully written with ID: ", docRef.id);
+      res.status(201).json({ message: "Message sent successfully" });
+    })
+    .catch((error) => {
+      console.error("Error writing message: ", error);
+      res.status(500).json({ error: "Something went wrong" });
+    });
+});
+
 // Define the route to store chat messages
 router.post("/sendMessage", (req, res) => {
   const username = req.body.username;
@@ -51,6 +76,24 @@ router.get("/rooms", async (req, res) => {
 router.get("/rooms/:id", async (req, res) => {
   const id = req.params.id;
   const collectionRef = db.collection("rooms").doc(id.toLowerCase());
+
+  await collectionRef
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(404).json({ error: "Room does not exist!" });
+      }
+      res.json(doc.data());
+    })
+    .catch((error) => {
+      console.error("Error getting documents: ", error);
+      res.status(500).json({ error: "Something went wrong" });
+    });
+});
+
+router.get("/saveRooms/:id", async (req, res) => {
+  const id = req.params.id;
+  const collectionRef = db.collection("saveRoomToUser").doc(id.toLowerCase());
 
   await collectionRef
     .get()
