@@ -8,7 +8,7 @@ import ChatHeader from "../features/ChatHeader";
 import Loader from "../features/Loader";
 import MessageInput from "../features/MessageInput";
 
-const Chat = () => {
+export const Chat = () => {
   const { user } = useContext(AuthContext);
   const [userMessage, setUserMessage] = useState<
     { username: string; text: string }[]
@@ -133,5 +133,3 @@ const Chat = () => {
     </div>
   );
 };
-
-export default Chat;

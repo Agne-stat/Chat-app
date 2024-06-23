@@ -4,20 +4,21 @@ export default {
   theme: {
     extend: {},
     colors: {
-      primary: "#990abd",
+      primary: "#ef16e6",
       text: "#0D0F10",
       background: "#0D0F10",
-      accent: "#F9E5FF",
+      accent: "#f2cdf0",
       white: "#fff",
       chatBackground: "#f6f6f6",
+      gray: "#f0f0f0",
     },
-    // colors: {
-    //   primary: "#00F0D3",
-    //   text: "#CFCFCF",
-    //   background: "#0D0F10",
-    //   accent: "#FF67D4",
-    //   white: "#fff",
-    // },
+    width: {
+      chatBody: "450px",
+      profile: "40px",
+      full: "100%",
+      half: "50%",
+      inputButton: "80px",
+    },
   },
   plugins: [],
 };
