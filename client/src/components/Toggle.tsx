@@ -44,8 +44,6 @@ export const Toggle: React.FC = ({}) => {
     }
   };
 
-  // const roomsFromNewest = usersRooms.reverse();
-
   return (
     <div className="overflow-y-auto w-full">
       <div className="w-full h-12 rounded-3xl mt-6 mb-6 shadow-md mx-1">
@@ -122,7 +120,7 @@ export const Toggle: React.FC = ({}) => {
                 </select>
                 <button
                   className={`w-inputButton h-full rounded-3xl border border-gray ${
-                    chatRoom && "bg-accent text-white"
+                    chatRoom && "bg-primary text-white"
                   }`}
                 >
                   Join

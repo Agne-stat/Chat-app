@@ -110,26 +110,36 @@ export const Chat = () => {
     socket!.emit("typing", chatRoom, userName);
   };
 
+  const handleKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleForm(e);
+    }
+  };
+
   return (
-    <div className="h-full flex flex-col place-content-between p-8">
-      <ChatHeader chatRoom={chatRoom} uniqueUsersArray={uniqueUsersArray} />
-      {isError && (
-        <div className="text-xl text-gray-400 md:w-5/12 m-auto"></div>
-      )}
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <>
-          <ChatBody userMessage={userMessage} />
-          <MessageInput
-            handleUserTyping={handleUserTyping}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            handleForm={(e) => handleForm(e)}
-          />
-        </>
-      )}
-      <ChatBottom isTypingText={isTypingText} />
+    <div className="font-sans m-0 p-0 bg-white text-gray-800 flex justify-center items-center h-screen">
+      <div className="w-chatBody shadow-md rounded-lg text-center bg-white h-auto">
+        <ChatHeader chatRoom={chatRoom} uniqueUsersArray={uniqueUsersArray} />
+        {isError && (
+          <div className="text-xl text-gray-400 md:w-5/12 m-auto"></div>
+        )}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+            <ChatBody userMessage={userMessage} />
+            <MessageInput
+              handleUserTyping={handleUserTyping}
+              inputValue={inputValue}
+              setInputValue={setInputValue}
+              handleKeyDown={handleKeyDown}
+              handleForm={(e) => handleForm(e)}
+            />
+          </>
+        )}
+        <ChatBottom isTypingText={isTypingText} />
+      </div>
     </div>
   );
 };

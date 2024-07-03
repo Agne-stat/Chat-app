@@ -6,56 +6,40 @@ import Text from "../components/Text";
 export const Profile = () => {
   const { user, auth } = useContext(AuthContext);
 
-  // const userFirstNameLetter = user?.displayName?.slice(0, 1).toUpperCase();
+  console.log("user", user);
 
   return (
-    <div className="h-screen bg-white bg-opacity-90 overflow-y-auto">
-      <Text text={`Hi, ${user?.displayName}`} className="mb-2 w-full" />
-      <Text text={user?.email} className="mb-2 w-full" />
-      {user?.photoURL && (
-        <img src={user.photoURL} className="rounded-t-full rounded-b-full" />
-      )}
-      <Button
-        text="Logout"
-        onClick={() => auth?.signOut()}
-        className="w-auto bg-white text-primary px-0"
-      />
+    <div className="font-sans m-0 p-0 bg-white text-gray-800 flex justify-center items-center h-screen">
+      <div className="w-chatBody shadow-md rounded-lg text-center bg-white h-5/6 p-5">
+        <div className="flex flex-col justify-between items-center mb-5">
+          <div className="flex w-full justify-between">
+            <div className="flex flex-col">
+              <Text text={`Hi, ${user?.displayName}`} className="mb-2 w-full" />
+              <Text text={user?.email} className="mb-2 w-full" />
+            </div>
+            {user?.photoURL && (
+              <img
+                src={user.photoURL}
+                className="rounded-t-full rounded-b-full"
+              />
+            )}
+          </div>
+
+          <div className="w-full text-center text-lg font-bold rounded-lg flex justify-between items-center ">
+            <a href="/">
+              <Button
+                text="Back"
+                className="w-auto h-full rounded-3xl border border-primary bg-white text-sm py-1 px-1 text-primary"
+              />
+            </a>
+            <Button
+              text="Logout"
+              onClick={() => auth?.signOut()}
+              className="w-auto bg-white text-primary px-0"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
-
-// function uploadImage() {
-//   const imageInput = document.getElementById("imageInput");
-
-//   // Get the selected file
-//   const file = imageInput.files[0];
-
-//   if (file) {
-//     // Create a reference for the image in Firebase Storage
-//     const imageRef = storage.child("user_images/" + file.name);
-
-//     // Upload the file to Firebase Storage
-//     imageRef
-//       .put(file)
-//       .then((snapshot) => {
-//         // Get the download URL of the uploaded image
-//         snapshot.ref.getDownloadURL().then((downloadURL) => {
-//           // Save the download URL to Firestore under the user's collection
-//           const userCollection = db.collection("users").doc("USER_ID"); // Replace 'USER_ID' with the actual user ID
-//           userCollection
-//             .update({
-//               image: downloadURL,
-//             })
-//             .then(() => {
-//               console.log("Image uploaded and URL saved to Firestore.");
-//             })
-//             .catch((error) => {
-//               console.error("Error saving image URL to Firestore:", error);
-//             });
-//         });
-//       })
-//       .catch((error) => {
-//         console.error("Error uploading image to Firebase Storage:", error);
-//       });
-//   }
-// }

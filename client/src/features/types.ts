@@ -3,6 +3,7 @@ export interface MessageInputProps {
   inputValue: string;
   setInputValue: (e: string) => void;
   handleForm: (e: any) => void;
+  handleKeyDown: (e: any) => void;
 }
 
 export interface AllUsersProps {

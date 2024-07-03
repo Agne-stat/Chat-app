@@ -29,7 +29,7 @@ export const InputField: React.FC = () => {
       />
       <button
         className={`w-inputButton h-full rounded-3xl border border-gray ${
-          roomId && "bg-accent text-white"
+          roomId && "bg-primary text-white"
         }`}
         onClick={(e) => joinRoom(roomId!, e)}
       >

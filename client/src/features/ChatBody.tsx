@@ -8,7 +8,7 @@ const ChatBody: React.FC<UserMessageProps> = ({ userMessage }) => {
 
   useEffect(() => {
     if (chatDivOuter.current && chatDivInner.current) {
-      const innerHeight = chatDivInner.current.clientHeight;
+      const innerHeight = chatDivInner.current.scrollHeight;
 
       chatDivOuter.current.scrollTo({
         top: innerHeight,
@@ -20,10 +20,10 @@ const ChatBody: React.FC<UserMessageProps> = ({ userMessage }) => {
 
   return (
     <div
-      className="relative overflow-scroll overflow-x-hidden mb-5 md:w-5/12 md:m-auto no-scrollbar"
+      className="flex-1 p-5 overflow-y-auto bg-blue-50 relative overflow-scroll overflow-x-hidden"
       ref={chatDivOuter}
     >
-      <ul className="relative" ref={chatDivInner}>
+      <ul className="relative h-96" ref={chatDivInner}>
         <Message userMessage={userMessage} />
       </ul>
     </div>

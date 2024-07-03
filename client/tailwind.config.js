@@ -18,6 +18,7 @@ export default {
       full: "100%",
       half: "50%",
       inputButton: "80px",
+      auto: "auto",
     },
   },
   plugins: [],
