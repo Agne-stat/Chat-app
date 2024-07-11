@@ -4,10 +4,10 @@ export default {
   theme: {
     extend: {},
     colors: {
-      primary: "#ef16e6",
+      primary: "#F44862",
       text: "#0D0F10",
       background: "#0D0F10",
-      accent: "#f2cdf0",
+      accent: "#FF7482",
       white: "#fff",
       chatBackground: "#f6f6f6",
       gray: "#f0f0f0",
